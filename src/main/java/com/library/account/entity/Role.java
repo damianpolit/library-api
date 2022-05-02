@@ -1,6 +1,6 @@
 package com.library.account.entity;
 
-enum Role {
+public enum Role {
     
     ADMIN,
     STAFF,
