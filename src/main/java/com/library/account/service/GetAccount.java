@@ -1,12 +1,23 @@
 package com.library.account.service;
 
 import com.library.account.entity.Account;
+import com.library.account.repository.AccountRepository;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 
-public interface GetAccount {
+@Service
+@RequiredArgsConstructor
+public class GetAccount {
     
-    List<Account> getAll();
+    private final AccountRepository accountRepository;
     
-    Account getById(Long accountId);
+    public Account getById(final Long accountId) {
+        return accountRepository.getById(accountId);
+    }
+    
+    public List<Account> getAll() {
+        return accountRepository.findAll();
+    }
 }

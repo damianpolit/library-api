@@ -1,94 +1,42 @@
 package com.library.account.controller;
 
 import com.library.account.entity.Account;
-import com.library.account.factory.impl.AccountCreator;
-import com.library.account.repository.AccountRepository;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
+import com.library.account.factory.AccountCreator;
+import com.library.account.service.AddNewAccount;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.test.web.servlet.MockMvc;
 
-import java.util.List;
-import java.util.Optional;
+import static com.library.account.factory.AccountCreator.admin;
+import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-
-@SpringBootTest
+@WebMvcTest(AccountController.class)
 class AccountControllerTest {
     
-    private Account account;
+    
+    @MockBean
+    private AddNewAccount addNewAccount;
     
     @Autowired
-    private AccountRepository accountRepository;
-    
-    
-    @BeforeEach
-    void setUp() {
-        account = new AccountCreator().createAdmin();
-    }
-    
-    @AfterEach
-    void tearDown() {
-        accountRepository.deleteAll();
-    }
-    
+    private MockMvc mockMvc;
     
     @Test
-    @DisplayName("Fetch account after save")
-    void shouldReturnFetchedAccountAfterSave() {
-        //given
-        accountRepository.save(account);
+    void should() throws Exception {
+        Account account = admin();
         
-        //when
-        var fetchedAccount = accountRepository.getById(account.getId());
+        when(addNewAccount.execute(account)).thenReturn(account);
         
-        //then
-        assertEquals("theLogin", fetchedAccount.getLogin());
-        assertEquals("ADMIN", fetchedAccount.getRole().name());
-    }
-    
-    @Test
-    @DisplayName("Return list of Accounts")
-    void shouldReturnListOfAddedAccounts() {
-        //given
-        accountRepository.save(account);
-        accountRepository.save(account);
-        
-        //when
-        
-        //then
-        assertNotNull(accountRepository.getById(account.getId()));
-        assertNotNull(accountRepository.getById(account.getId()));
-        
-    }
-    
-    @Test
-    @DisplayName("Fetch Account by Id")
-    void shouldReturnAccountById() {
-        //given
-        accountRepository.save(account);
-        
-        //when
-        Optional<Account> optionalAccount = accountRepository.findById(account.getId());
-        
-        //then
-        assertEquals(account.getId(), optionalAccount.get().getId());
-    }
-    
-    @Test
-    @DisplayName("Delete Account by Id")
-    void shouldDeleteAccountById() {
-        //given
-        accountRepository.save(account);
-        
-        //when
-        accountRepository.deleteById(account.getId());
-        Optional<Account> optional = accountRepository.findById(account.getId());
-        
-        //then
-        assertEquals(Optional.empty(), optional);
+        mockMvc.perform(post("api/accounts")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{\"testthat\": \"test that\"}"))
+                .andExpect(status().isCreated())
+                .andExpect(header().string(HttpHeaders.LOCATION, "http://localhost/api/accounts"));
     }
 }

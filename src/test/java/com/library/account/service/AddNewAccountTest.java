@@ -1,32 +1,28 @@
 package com.library.account.service;
 
+import com.library.LibraryApplication;
 import com.library.account.entity.Account;
-import com.library.account.factory.impl.AccountCreator;
 import com.library.account.repository.AccountRepository;
 import com.library.testcontainers.config.ContainerEnvironment;
 import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ActiveProfiles;
 
 import java.util.List;
 
+import static com.library.account.factory.AccountCreator.admin;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-@SpringBootTest
-public class AddNewAccountImplTest extends ContainerEnvironment {
+@ActiveProfiles("test")
+@SpringBootTest(classes = LibraryApplication.class, webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
+public class AddNewAccountTest extends ContainerEnvironment {
     
     
     @Autowired
     private AccountRepository accountRepository;
-    private Account account;
-    
-    @BeforeEach
-    void setUp() {
-    account = new AccountCreator().createAdmin();
-    }
     
     @AfterEach
     void tearDown() {
@@ -34,22 +30,20 @@ public class AddNewAccountImplTest extends ContainerEnvironment {
     }
     
     @Test
-    @DisplayName("Should return empty Account list")
+    @DisplayName("Return empty Account list")
     void shouldReturnEmptyAccountList() {
-        // given
+        // given & when
         List<Account> accountList = accountRepository.findAll();
         
-        // when & then
+        // then
         assertEquals(0, accountList.size());
     }
     
     @Test
-    @DisplayName("Should return not empty Account list")
+    @DisplayName("Return not empty Account list")
     void shouldReturnNotEmptyAccountList() {
-        // given
-        accountRepository.save(account);
-        
-        // when
+        // given & when
+        accountRepository.save(admin());
         List<Account> accountList = accountRepository.findAll();
         
         // then
@@ -57,15 +51,13 @@ public class AddNewAccountImplTest extends ContainerEnvironment {
     }
     
     @Test
-    @DisplayName("Should return saved Account by login")
+    @DisplayName("Return saved Account by login")
     void shouldFetchSavedAccountByLogin() {
-        // given
-        accountRepository.save(account);
-        
-        // when
-        final List<Account> fetchedAccount = accountRepository.findByLogin(account.getLogin());
+        // given & when
+        final Account savedAccount = accountRepository.save(admin());
+        final Account fetchedAccount = accountRepository.findByLogin(savedAccount.getLogin());
         
         // then
-        assertEquals("testLogin", fetchedAccount.stream().findFirst().get().getLogin());
+        assertEquals(savedAccount.getLogin(), fetchedAccount.getLogin());
     }
 }
