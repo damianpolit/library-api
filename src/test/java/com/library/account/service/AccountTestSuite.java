@@ -9,16 +9,15 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.ActiveProfiles;
 
 import java.util.List;
 
 import static com.library.account.factory.AccountCreator.admin;
+import static com.library.account.factory.AccountCreator.member;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-@ActiveProfiles("test")
 @SpringBootTest(classes = LibraryApplication.class, webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
-public class AddNewAccountTest extends ContainerEnvironment {
+public class AccountTestSuite extends ContainerEnvironment {
     
     
     @Autowired
@@ -59,5 +58,20 @@ public class AddNewAccountTest extends ContainerEnvironment {
         
         // then
         assertEquals(savedAccount.getLogin(), fetchedAccount.getLogin());
+    }
+    
+    @Test
+    @DisplayName("Return size after removing resource")
+    void shouldReturnTheSizeOfAccountRepositoryAfterDeleteById() {
+        // given & when
+        final Account member1 = accountRepository.save(member());
+        final Account member2 = accountRepository.save(member());
+        
+        accountRepository.deleteById(member1.getId());
+        List<Account> accountList = accountRepository.findAll();
+        
+        // then
+        assertEquals(1, accountList.size());
+        
     }
 }

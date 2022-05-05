@@ -1,8 +1,7 @@
 package com.library.account.controller;
 
 import com.library.account.entity.Account;
-import com.library.account.factory.AccountCreator;
-import com.library.account.service.AddNewAccount;
+import com.library.account.service.AddAccount;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -22,7 +21,7 @@ class AccountControllerTest {
     
     
     @MockBean
-    private AddNewAccount addNewAccount;
+    private AddAccount addAccount;
     
     @Autowired
     private MockMvc mockMvc;
@@ -31,7 +30,7 @@ class AccountControllerTest {
     void should() throws Exception {
         Account account = admin();
         
-        when(addNewAccount.execute(account)).thenReturn(account);
+        when(addAccount.execute(account)).thenReturn(account);
         
         mockMvc.perform(post("api/accounts")
                         .contentType(MediaType.APPLICATION_JSON)

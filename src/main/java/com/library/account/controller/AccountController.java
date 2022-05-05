@@ -1,7 +1,7 @@
 package com.library.account.controller;
 
 import com.library.account.entity.Account;
-import com.library.account.service.AddNewAccount;
+import com.library.account.service.AddAccount;
 import com.library.account.service.GetAccount;
 import com.library.account.service.RemoveAccount;
 import lombok.RequiredArgsConstructor;
@@ -17,13 +17,13 @@ import java.util.List;
 @CrossOrigin(origins = "http://localhost:8080")
 final class AccountController {
     
-    private final AddNewAccount addNewAccount;
+    private final AddAccount addAccount;
     private final GetAccount getAccount;
     private final RemoveAccount removeAccount;
     
     @PostMapping
     public ResponseEntity<Account> add(@RequestBody Account account) {
-        return new ResponseEntity<>(addNewAccount.execute(account), HttpStatus.CREATED);
+        return new ResponseEntity<>(addAccount.execute(account), HttpStatus.CREATED);
     }
     
     @GetMapping("/{accountId}")

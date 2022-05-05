@@ -12,8 +12,8 @@ public class AccountCreator {
         final Random random = new Random();
         return Account.builder()
                 .id(random.nextLong(1000))
-                .login("testLogin")
-                .password("testPassword")
+                .login("membermember")
+                .password("memberassword")
                 .createdAt(LocalDateTime.of(2021, 1, 1, 10, 1))
                 .role(Role.MEMBER)
                 .build();
@@ -23,8 +23,8 @@ public class AccountCreator {
         final Random random = new Random();
         return Account.builder()
                 .id(random.nextLong(1000))
-                .login("testLogin")
-                .password("testPassword")
+                .login("adminadmin")
+                .password("adminpassword")
                 .createdAt(LocalDateTime.of(2021, 1, 1, 10, 1))
                 .role(Role.ADMIN)
                 .build();
