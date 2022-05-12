@@ -29,4 +29,12 @@ public class AccountCreator {
                 .role(Role.ADMIN)
                 .build();
     }
+    
+    public static Account adminWithoutdate() {
+        return Account.builder()
+                .login("adminadmin")
+                .password("adminpassword")
+                .role(Role.ADMIN)
+                .build();
+    }
 }

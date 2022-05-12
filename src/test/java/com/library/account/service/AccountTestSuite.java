@@ -5,7 +5,6 @@ import com.library.account.entity.Account;
 import com.library.account.repository.AccountRepository;
 import com.library.testcontainers.config.ContainerEnvironment;
 import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -29,7 +28,6 @@ public class AccountTestSuite extends ContainerEnvironment {
     }
     
     @Test
-    @DisplayName("Return empty Account list")
     void shouldReturnEmptyAccountList() {
         // given & when
         List<Account> accountList = accountRepository.findAll();
@@ -39,7 +37,6 @@ public class AccountTestSuite extends ContainerEnvironment {
     }
     
     @Test
-    @DisplayName("Return not empty Account list")
     void shouldReturnNotEmptyAccountList() {
         // given & when
         accountRepository.save(admin());
@@ -50,7 +47,6 @@ public class AccountTestSuite extends ContainerEnvironment {
     }
     
     @Test
-    @DisplayName("Return saved Account by login")
     void shouldFetchSavedAccountByLogin() {
         // given & when
         final Account savedAccount = accountRepository.save(admin());
@@ -61,17 +57,18 @@ public class AccountTestSuite extends ContainerEnvironment {
     }
     
     @Test
-    @DisplayName("Return size after removing resource")
     void shouldReturnTheSizeOfAccountRepositoryAfterDeleteById() {
         // given & when
         final Account member1 = accountRepository.save(member());
         final Account member2 = accountRepository.save(member());
         
-        accountRepository.deleteById(member1.getId());
         List<Account> accountList = accountRepository.findAll();
         
         // then
-        assertEquals(1, accountList.size());
+        assertEquals(2, accountList.size());
         
+        accountRepository.deleteById(member1.getId());
+        accountList = accountRepository.findAll();
+        assertEquals(1, accountList.size());
     }
 }
